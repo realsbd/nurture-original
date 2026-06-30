@@ -4,6 +4,57 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ── Nurture brand tokens ────────────────────────────────── */
+@theme {
+    /* Brand blues */
+    --color-nurture-primary: #0047c7;
+    --color-nurture-secondary: #1e6bff;
+    --color-nurture-sky: #6fbbff;
+    --color-nurture-ice: #dceeff;
+    /* Deep blue sampled from the can photography — used to blend sections
+       seamlessly behind product imagery. */
+    --color-nurture-deep: #003e90;
+    /* Neutrals */
+    --color-nurture-gray: #5f6b7a;
+    /* Nature */
+    --color-nurture-forest: #2f6b3a;
+    --color-nurture-spring: #8bc34a;
+
+    /* Type stacks (vars injected by next/font in layout.tsx) */
+    --font-display: var(--font-bricolage), "Space Grotesk", sans-serif;
+    --font-serif: var(--font-playfair), "Lora", serif;
+    --font-body: var(--font-inter), "DM Sans", system-ui, sans-serif;
+    --font-mono-brand: var(--font-space-mono), "Courier New", monospace;
+
+    /* Motion */
+    --ease-nurture: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Keyframes */
+    --animate-ticker: ticker-scroll 30s linear infinite;
+    --animate-orb-pulse: orb-pulse 8s ease-in-out infinite;
+}
+
+@keyframes ticker-scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes orb-pulse {
+    0%,
+    100% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.12) translate(-2%, 3%);
+        opacity: 1;
+    }
+}
+
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: var(--font-sans);
@@ -126,4 +177,38 @@
   html {
     @apply font-sans;
     }
+}
+
+@layer utilities {
+  /* Marquee ticker track — duplicated content scrolls -50% for a seamless loop */
+  .ticker-track {
+    width: max-content;
+    animation: var(--animate-ticker);
+  }
+
+  /* Ambient pulsing orb behind the hero */
+  .hero-orb {
+    background: radial-gradient(
+      circle,
+      rgba(30, 107, 255, 0.16) 0%,
+      rgba(220, 238, 255, 0.1) 50%,
+      transparent 70%
+    );
+    animation: var(--animate-orb-pulse);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ticker-track,
+  .hero-orb {
+    animation: none !important;
+  }
 }
