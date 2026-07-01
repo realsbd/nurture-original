@@ -74,12 +74,12 @@ export const PRODUCTS: Product[] = [
     volume: "355 mL",
     ph: "pH 7.7",
     pack: "12 pack",
-    price: "$22.99 CAD",
+    price: "$24.99 CAD",
     description:
       "Enjoy pure refreshment with Nurture Sparkling Water. Made from premium Canadian spring water and infused with crisp carbonation, this 355 mL can delivers a clean, refreshing taste with zero calories, no sugar, and no artificial ingredients. Simply pure sparkling hydration, proudly Canadian.",
     images: ["/pack-sparkling.jpeg", "/can-sparkling.png", "/can-blue.png"],
     thumb: "/can-sparkling.png",
-    packPrice: 22.99,
+    packPrice: 24.99,
     packCount: 12,
     nutrition: [
       { label: "Calories", value: "0" },
@@ -98,12 +98,12 @@ export const PRODUCTS: Product[] = [
     volume: "355 mL",
     ph: "pH 7.7",
     pack: "12 pack",
-    price: "$22.99 CAD",
+    price: "$24.99 CAD",
     description:
       "Crafted without sugar, sweeteners, or artificial colours, Nurture Lemon & Lime Sparkling Water offers a refreshing alternative to sugary soft drinks while maintaining the pure quality and taste you expect from Nurture.",
     images: ["/pack-lemon-lime.jpeg", "/nurture-can-green.jpeg", "/can-green.jpeg"],
     thumb: "/nurture-can-green.jpeg",
-    packPrice: 22.99,
+    packPrice: 24.99,
     packCount: 12,
     nutrition: [
       { label: "Calories", value: "0" },
@@ -138,7 +138,7 @@ export type SubscriptionPlan = {
 }
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
-  { id: "7", cadence: "Every 7 days", save: "Save 10%", discount: 0.1 },
-  { id: "14", cadence: "Every 14 days", save: "Save 10%", discount: 0.1 },
+  { id: "7", cadence: "Every 7 days", save: "Save 5%", discount: 0.05 },
+  { id: "14", cadence: "Every 14 days", save: "Save 7%", discount: 0.07 },
   { id: "30", cadence: "Every 30 days", save: "Save 10%", discount: 0.1 },
 ]

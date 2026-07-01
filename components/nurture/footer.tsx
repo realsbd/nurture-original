@@ -20,7 +20,8 @@ const FOOTER_LINKS = [
       { label: "Who We Are", href: "/#story" },
       { label: "Sustainability", href: "/#sustainability" },
       { label: "Subscribe & Save", href: "/checkout" },
-      { label: "Contact", href: "/#story" },
+      { label: "Shipping Policy", href: "/shipping-policy" },
+      { label: "Contact", href: "mailto:hello@nurturewater.ca" },
     ],
   },
 ]

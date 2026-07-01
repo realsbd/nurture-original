@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import {
   IconChevronDown,
   IconShoppingBag,
@@ -116,12 +117,16 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-[clamp(1rem,5vw,3rem)] py-5">
         {/* Logo */}
-        <Link
-          href="/"
-          className="font-display text-2xl font-black tracking-tight text-nurture-primary"
-        >
-          NURTURE
-          <span className="text-nurture-spring">.</span>
+        <Link href="/" aria-label="Nurture — home" className="flex items-center">
+          <Image
+            src="/logo.svg"
+            alt="Nurture"
+            width={140}
+            height={96}
+            priority
+            unoptimized
+            className="h-8 w-auto"
+          />
         </Link>
 
         {/* Desktop nav */}

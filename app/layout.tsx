@@ -9,7 +9,6 @@ import {
 } from "next/font/google"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { CartProvider } from "@/components/nurture/cart-context"
 import { CartDrawer } from "@/components/nurture/cart-drawer"
 import { cn } from "@/lib/utils"
@@ -74,12 +73,10 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider>
-          <CartProvider>
-            {children}
-            <CartDrawer />
-          </CartProvider>
-        </ThemeProvider>
+        <CartProvider>
+          {children}
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   )
