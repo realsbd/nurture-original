@@ -39,8 +39,7 @@ export function Footer() {
               NURTURE<span className="text-nurture-spring">.</span>
             </Link>
             <p className="mt-4 max-w-xs font-body text-sm leading-relaxed text-nurture-gray">
-              Naturally alkaline spring water. Youthful hydration, naturally
-              nurtured proudly Canadian.
+              Naturally alkaline spring water. Youthful hydration, proudly Canadian.
             </p>
           </Reveal>
 
@@ -67,7 +66,7 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-nurture-ice pt-8 sm:flex-row">
           <p className="font-mono-brand text-[0.7rem] tracking-[0.1em] text-nurture-gray uppercase">
-            © 2026 Nurture Water · Aspire IT Hub
+            © 2026 Nurture Water
           </p>
           <p className="font-mono-brand text-[0.7rem] tracking-[0.15em] text-nurture-sky uppercase">
             Naturally Alkaline · pH 8.0+

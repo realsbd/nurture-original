@@ -26,7 +26,7 @@ export function WhoWeAre() {
 
             <Reveal from="left" delay={120}>
               <p className="mt-8 max-w-xl font-body text-lg leading-relaxed text-nurture-gray">
-                At Nurture Water we believe hydration is more than a necessity
+                At Nurture Water we believe hydration is more than a necessity,
                 it&apos;s a lifestyle. Our mission is to inspire individuals,
                 families, athletes, and communities to prioritize their health
                 through clean, high-quality water.
@@ -35,8 +35,7 @@ export function WhoWeAre() {
 
             <Reveal from="left" delay={220}>
               <p className="mt-4 max-w-xl font-body text-lg leading-relaxed text-nurture-gray">
-                We are committed to helping people stay refreshed, energized, and
-                ready to thrive.
+                We are committed to helping people stay refreshed, and energized.
               </p>
             </Reveal>
 

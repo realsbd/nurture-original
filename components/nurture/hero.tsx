@@ -79,8 +79,7 @@ export function Hero({ active }: HeroProps) {
           <animated.div style={copy}>
             <p className="mt-7 max-w-md font-body text-base leading-relaxed text-nurture-gray">
               Nurture provides pure hydration for your everyday lifestyle with a
-              pH of 8.0, bottled at the source and proudly Canadian it&apos;s
-              hydration the way nature intended.
+              pH of 8.0, bottled at the source and proudly Canadian.Filtered by Mother Nature.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">

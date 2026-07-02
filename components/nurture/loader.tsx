@@ -67,15 +67,15 @@ export function Loader({ onFinished }: LoaderProps) {
       </span>
 
       <div
-        className="relative flex items-center justify-center"
+        className="relative flex items-center justify-center gap-0"
         aria-label="NURTURE"
         role="img"
       >
-        {/* Logo mark stands in for the leading "N" */}
+        {/* Logo mark stands in for the leading "N" — sized to match the wordmark */}
         <animated.span
           style={logo}
           aria-hidden="true"
-          className="relative inline-block h-[clamp(2.6rem,14vw,9.5rem)] w-[clamp(2.6rem,14vw,9.5rem)] shrink-0"
+          className="relative inline-block h-[clamp(3rem,16vw,11rem)] w-[clamp(3rem,16vw,11rem)] shrink-0"
         >
           <Image
             src="/logo-icon.svg"

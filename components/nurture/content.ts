@@ -4,10 +4,6 @@ export const CAN_FEATURES = [
     body: "Aluminum can be recycled again and again without losing quality, making it one of the most sustainable beverage packaging options available.",
   },
   {
-    title: "Higher Recycling Rates",
-    body: "Aluminum cans are among the most recycled beverage containers in the world, helping reduce waste and support a circular economy.",
-  },
-  {
     title: "Lower Transportation Impact",
     body: "Lightweight and efficient to transport, cans require less energy to move from production facilities to store shelves, reducing carbon emissions.",
   },
@@ -138,7 +134,7 @@ export type SubscriptionPlan = {
 }
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
-  { id: "7", cadence: "Every 7 days", save: "Save 5%", discount: 0.05 },
+  { id: "7", cadence: "Every 7 days", save: "Save 10%", discount: 0.05 },
   { id: "14", cadence: "Every 14 days", save: "Save 7%", discount: 0.07 },
-  { id: "30", cadence: "Every 30 days", save: "Save 10%", discount: 0.1 },
+  { id: "30", cadence: "Every 30 days", save: "Save 5%", discount: 0.1 },
 ]
