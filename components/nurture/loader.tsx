@@ -78,7 +78,7 @@ export function Loader({ onFinished }: LoaderProps) {
           className="relative inline-block h-[clamp(3rem,16vw,11rem)] w-[clamp(3rem,16vw,11rem)] shrink-0"
         >
           <Image
-            src="/logo-icon.svg"
+            src="/logo.svg"
             alt=""
             fill
             priority

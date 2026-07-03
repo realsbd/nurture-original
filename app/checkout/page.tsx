@@ -158,7 +158,7 @@ export default function CheckoutPage() {
                   </h2>
                 </div>
                 <p className="mt-1 font-body text-sm text-nurture-gray">
-                  Save 10% on every delivery. Modify, pause, or cancel anytime —
+                  Save up to 10% on every delivery. Modify, pause, or cancel anytime —
                   no commitment.
                 </p>
                 <div className="mt-4 flex flex-col gap-2">
