@@ -18,6 +18,10 @@ type LoaderProps = {
 export function Loader({ onFinished }: LoaderProps) {
   const [exiting, setExiting] = React.useState(false)
   const [logoIn, setLogoIn] = React.useState(false)
+  // Once the scramble settles we cross-fade the font wordmark out and the
+  // crisp URTURE.svg in — so the intro still "scrambles like text" but resolves
+  // to the real brand asset.
+  const [resolved, setResolved] = React.useState(false)
 
   const styles = useSpring({
     opacity: exiting ? 0 : 1,
@@ -36,11 +40,21 @@ export function Loader({ onFinished }: LoaderProps) {
     delay: 120,
   })
 
-  // Progress bar that fills across the scramble window.
+  // Cross-fade between the scrambling font text and the resolved SVG wordmark.
+  const scrambleFade = useSpring({
+    opacity: resolved ? 0 : 1,
+    config: { duration: 240 },
+  })
+  const wordmarkFade = useSpring({
+    opacity: resolved ? 1 : 0,
+    config: { duration: 320 },
+  })
+
+  // Progress bar that fills across the (now longer) scramble + hold window.
   const bar = useSpring({
     from: { width: "0%" },
     to: { width: "100%" },
-    config: { duration: 1600 },
+    config: { duration: 3600 },
   })
 
   React.useEffect(() => {
@@ -49,8 +63,10 @@ export function Loader({ onFinished }: LoaderProps) {
   }, [])
 
   const handleComplete = React.useCallback(() => {
-    // Brief hold on the resolved wordmark before exiting.
-    const t = setTimeout(() => setExiting(true), 650)
+    // Swap the scrambled font text for the crisp SVG wordmark, then hold on the
+    // resolved wordmark for ~2s so the intro doesn't flash by, then exit.
+    setResolved(true)
+    const t = setTimeout(() => setExiting(true), 2000)
     return () => clearTimeout(t)
   }, [])
 
@@ -87,15 +103,46 @@ export function Loader({ onFinished }: LoaderProps) {
           />
         </animated.span>
 
-        <ScrambleText
-          aria-label="URTURE"
-          text="URTURE"
-          startDelay={150}
-          stagger={70}
-          scrambleDuration={650}
-          onComplete={handleComplete}
-          className="font-display text-[clamp(3rem,16vw,11rem)] leading-none font-black tracking-tight"
-        />
+        {/*
+          The remaining letters scramble as font text, then cross-fade to the
+          crisp URTURE.svg. Both layers share one grid cell (stacked) so the row
+          width never jumps when the swap happens. Negative margin closes the gap
+          to the logo mark so "N" + "URTURE" reads as a single word — tune the
+          clamp if it overlaps or leaves a seam on your screen.
+        */}
+        <span className="relative grid ml-[clamp(-1.75rem,-2.2vw,-0.35rem)]">
+          <animated.span
+            style={scrambleFade}
+            className="col-start-1 row-start-1"
+            aria-hidden={resolved}
+          >
+            <ScrambleText
+              aria-label="URTURE"
+              text="URTURE"
+              startDelay={150}
+              stagger={70}
+              scrambleDuration={650}
+              onComplete={handleComplete}
+              className="font-display text-[#033892] text-[clamp(3rem,16vw,11rem)] leading-none font-black tracking-tight"
+            />
+          </animated.span>
+
+          <animated.span
+            style={wordmarkFade}
+            aria-hidden="true"
+            className="col-start-1 row-start-1 flex items-center"
+          >
+            <Image
+              src="/URTURE.svg"
+              alt=""
+              width={1218}
+              height={159}
+              priority
+              unoptimized
+              className="h-[clamp(1.9rem,9.5vw,6.6rem)] w-auto"
+            />
+          </animated.span>
+        </span>
       </div>
 
       <div className="relative mt-10 h-px w-48 overflow-hidden bg-white/20">

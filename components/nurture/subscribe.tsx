@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { IconCheck, IconRefresh, IconX } from "@tabler/icons-react"
 
 import { Reveal } from "@/components/nurture/reveal"
@@ -74,12 +75,12 @@ export function Subscribe() {
             ))}
 
             <Reveal from="up" delay={320}>
-              <button
-                type="button"
-                className="mt-2 w-full rounded-full bg-nurture-spring px-8 py-4 font-mono-brand text-sm font-bold tracking-[0.1em] text-nurture-primary uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_50px_rgba(139,195,74,0.4)]"
+              <Link
+                href="/shop"
+                className="mt-2 block w-full rounded-full bg-nurture-spring px-8 py-4 text-center font-mono-brand text-sm font-bold tracking-[0.1em] text-nurture-primary uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_50px_rgba(139,195,74,0.4)]"
               >
                 Start Subscription
-              </button>
+              </Link>
             </Reveal>
           </div>
         </div>
