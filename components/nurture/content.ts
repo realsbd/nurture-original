@@ -51,7 +51,7 @@ export const PRODUCTS: Product[] = [
     price: "$19.99 CAD",
     description:
       "Sourced from a protected Canadian spring and naturally filtered through the earth to deliver a crisp, refreshing taste. With a naturally alkaline pH of 8.0 and naturally occurring minerals, Nurture provides pure hydration for your everyday lifestyle. Bottled at the source and proudly Canadian.",
-    images: ["/pack-still.jpeg", "/bottle-still.png", "/bottle-3d.png"],
+    images: ["/water-pack.jpeg", "/water single.jpeg", "/water-pack2.jpeg", "/pack-still.jpeg", "/bottle-still.png", "/bottle-3d.png"],
     thumb: "/bottle-still.png",
     packPrice: 19.99,
     packCount: 24,
@@ -97,7 +97,7 @@ export const PRODUCTS: Product[] = [
     price: "$24.99 CAD",
     description:
       "Crafted without sugar, sweeteners, or artificial colours, Nurture Lemon & Lime Sparkling Water offers a refreshing alternative to sugary soft drinks while maintaining the pure quality and taste you expect from Nurture.",
-    images: ["/pack-lemon-lime.jpeg", "/nurture-can-green.jpeg", "/can-green.jpeg"],
+    images: ["/sparkling pack-green.jpeg", "/pack-lemon-lime.jpeg", "/nurture-can-green.jpeg", "/can-green.jpeg"],
     thumb: "/nurture-can-green.jpeg",
     packPrice: 24.99,
     packCount: 12,
