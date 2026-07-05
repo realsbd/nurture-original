@@ -100,7 +100,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     )
   }, [])
 
-  const clear = React.useCallback(() => setItems([]), [])
+  const clear = React.useCallback(() => {
+    setItems([])
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(STORAGE_KEY)
+    }
+  }, [])
   const openCart = React.useCallback(() => setIsOpen(true), [])
   const closeCart = React.useCallback(() => setIsOpen(false), [])
 

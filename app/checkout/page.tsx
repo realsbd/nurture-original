@@ -10,6 +10,8 @@ import {
   IconCheck,
   IconRefresh,
   IconShoppingBag,
+  IconLoader2,
+  IconAlertCircle,
 } from "@tabler/icons-react"
 
 import { Navbar } from "@/components/nurture/navbar"
@@ -18,9 +20,10 @@ import { useCart } from "@/components/nurture/cart-context"
 import { formatCAD, SUBSCRIPTION_PLANS, HST_RATE } from "@/components/nurture/content"
 
 export default function CheckoutPage() {
-  const { items, subtotal, setQty, removeItem, clear } = useCart()
+  const { items, subtotal, setQty, removeItem } = useCart()
   const [planId, setPlanId] = React.useState<string | null>(null)
-  const [placed, setPlaced] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
 
   const plan = SUBSCRIPTION_PLANS.find((p) => p.id === planId) ?? null
   const discount = plan ? subtotal * plan.discount : 0
@@ -28,9 +31,34 @@ export default function CheckoutPage() {
   const tax = taxable * HST_RATE
   const total = taxable + tax
 
-  const handlePlaceOrder = () => {
-    setPlaced(true)
-    clear()
+  /**
+   * Creates a Stripe Checkout Session via our API route and redirects the
+   * user to Stripe's hosted payment page.
+   */
+  async function handlePlaceOrder() {
+    setError(null)
+    setLoading(true)
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, planId }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? "Could not create checkout session.")
+      }
+
+      // Redirect to Stripe-hosted Checkout page
+      window.location.href = data.url
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong."
+      setError(message)
+      setLoading(false)
+    }
   }
 
   return (
@@ -45,26 +73,7 @@ export default function CheckoutPage() {
           Review your order
         </h1>
 
-        {placed ? (
-          <div className="mt-12 flex flex-col items-center justify-center gap-5 rounded-3xl border border-nurture-ice bg-nurture-ice/30 py-20 text-center">
-            <span className="grid size-16 place-items-center rounded-full bg-nurture-spring text-nurture-primary">
-              <IconCheck size={32} stroke={2.5} />
-            </span>
-            <h2 className="font-display text-2xl font-black text-nurture-primary uppercase">
-              Order placed
-            </h2>
-            <p className="max-w-sm font-body text-nurture-gray">
-              Thanks for choosing Nurture. A confirmation is on its way — stay
-              hydrated, stay strong.
-            </p>
-            <Link
-              href="/shop"
-              className="rounded-full bg-nurture-primary px-8 py-4 font-mono-brand text-sm font-bold tracking-[0.1em] text-white uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-nurture-secondary"
-            >
-              Continue Shopping
-            </Link>
-          </div>
-        ) : items.length === 0 ? (
+        {items.length === 0 ? (
           <div className="mt-12 flex flex-col items-center justify-center gap-5 rounded-3xl border border-nurture-ice py-20 text-center">
             <span className="grid size-16 place-items-center rounded-full bg-nurture-ice text-nurture-primary">
               <IconShoppingBag size={28} />
@@ -211,7 +220,9 @@ export default function CheckoutPage() {
                 </div>
                 {plan && (
                   <div className="mt-2 flex items-center justify-between font-body text-sm text-nurture-forest">
-                    <span>Subscription discount (10%)</span>
+                    <span>
+                      Subscription discount ({Math.round(plan.discount * 100)}%)
+                    </span>
                     <span className="tabular-nums">−{formatCAD(discount)}</span>
                   </div>
                 )}
@@ -227,15 +238,35 @@ export default function CheckoutPage() {
                     {formatCAD(total)}
                   </span>
                 </div>
+
+                {/* Error message */}
+                {error && (
+                  <div className="mt-4 flex items-start gap-2 rounded-xl bg-red-50 p-3 text-red-700">
+                    <IconAlertCircle size={16} className="mt-0.5 shrink-0" />
+                    <p className="font-body text-xs">{error}</p>
+                  </div>
+                )}
+
                 <button
+                  id="stripe-checkout-btn"
                   type="button"
                   onClick={handlePlaceOrder}
-                  className="mt-5 w-full rounded-full bg-nurture-primary px-8 py-4 font-mono-brand text-sm font-bold tracking-[0.1em] text-white uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-nurture-secondary hover:shadow-[0_12px_40px_rgba(0,71,199,0.35)]"
+                  disabled={loading}
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-nurture-primary px-8 py-4 font-mono-brand text-sm font-bold tracking-[0.1em] text-white uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-nurture-secondary hover:shadow-[0_12px_40px_rgba(0,71,199,0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                 >
-                  {plan ? "Subscribe & Place Order" : "Place Order"}
+                  {loading ? (
+                    <>
+                      <IconLoader2 size={16} className="animate-spin" />
+                      Redirecting to payment…
+                    </>
+                  ) : plan ? (
+                    "Subscribe & Place Order"
+                  ) : (
+                    "Place Order"
+                  )}
                 </button>
                 <p className="mt-3 text-center font-body text-xs text-nurture-gray">
-                  Includes 13% HST · Proudly Canadian
+                  Secure payment via Stripe · 13% HST · Proudly Canadian
                 </p>
               </div>
             </aside>

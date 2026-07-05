@@ -10,6 +10,7 @@ import { WhyCans } from "@/components/nurture/why-cans"
 import { WhoWeAre } from "@/components/nurture/who-we-are"
 import { Products } from "@/components/nurture/products"
 import { Subscribe } from "@/components/nurture/subscribe"
+import { BannerGrid } from "@/components/nurture/banner-grid"
 import { Footer } from "@/components/nurture/footer"
 
 export default function Page() {
@@ -26,6 +27,7 @@ export default function Page() {
       <WhoWeAre />
       <Products />
       <Subscribe />
+      <BannerGrid />
       <Footer />
     </main>
   )
