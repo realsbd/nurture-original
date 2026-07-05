@@ -3,27 +3,22 @@
 import * as React from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { IconCheck, IconLoader2, IconRefresh } from "@tabler/icons-react"
+import { IconCheck } from "@tabler/icons-react"
 
 import { Navbar } from "@/components/nurture/navbar"
 import { Footer } from "@/components/nurture/footer"
 import { useCart } from "@/components/nurture/cart-context"
 
 /**
- * /checkout/success
- *
- * Stripe redirects here after a successful payment with:
- *   ?session_id={CHECKOUT_SESSION_ID}
- *
- * The cart is cleared on mount. The session_id can be used server-side
- * (via webhook or a fetch to /api/checkout/session) to show order details.
+ * Inner component — reads search params and clears the cart.
+ * Must be wrapped in <Suspense> at the page level so Next.js can
+ * statically prerender the shell and stream this part in.
  */
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const { clear } = useCart()
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
 
-  // Clear the cart once, immediately after a successful redirect
   const cleared = React.useRef(false)
   React.useEffect(() => {
     if (!cleared.current) {
@@ -33,13 +28,31 @@ export default function CheckoutSuccessPage() {
   }, [clear])
 
   return (
+    <>
+      {/* Session reference */}
+      {sessionId && (
+        <p className="mt-3 font-mono-brand text-xs tracking-widest text-nurture-gray/60 uppercase">
+          Reference: {sessionId.slice(-12).toUpperCase()}
+        </p>
+      )}
+    </>
+  )
+}
+
+/**
+ * /checkout/success
+ *
+ * Stripe redirects here after a successful payment with:
+ *   ?session_id={CHECKOUT_SESSION_ID}
+ */
+export default function CheckoutSuccessPage() {
+  return (
     <main className="relative min-h-dvh bg-white">
       <Navbar />
 
       <section className="mx-auto flex min-h-[calc(100dvh-80px)] max-w-[1280px] flex-col items-center justify-center px-[clamp(1rem,5vw,3rem)] py-24 text-center">
         {/* Animated success ring */}
         <span className="relative grid size-24 place-items-center">
-          {/* Pulsing glow */}
           <span className="absolute inset-0 animate-ping rounded-full bg-nurture-spring/60" />
           <span className="relative grid size-24 place-items-center rounded-full bg-nurture-spring text-nurture-primary shadow-[0_8px_32px_rgba(180,237,130,0.5)]">
             <IconCheck size={40} stroke={2.5} />
@@ -55,12 +68,10 @@ export default function CheckoutSuccessPage() {
           confirmation email is on its way. Stay hydrated, stay strong.
         </p>
 
-        {/* Session reference */}
-        {sessionId && (
-          <p className="mt-3 font-mono-brand text-xs tracking-widest text-nurture-gray/60 uppercase">
-            Reference: {sessionId.slice(-12).toUpperCase()}
-          </p>
-        )}
+        {/* useSearchParams lives here — Suspense boundary required by Next.js */}
+        <React.Suspense fallback={null}>
+          <SuccessContent />
+        </React.Suspense>
 
         {/* Divider */}
         <div className="mt-10 h-px w-24 bg-nurture-ice" />
