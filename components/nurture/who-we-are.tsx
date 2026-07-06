@@ -63,7 +63,7 @@ export function WhoWeAre() {
             <div className="sticky top-28">
               <div className="relative mx-auto h-[520px] w-full max-w-sm">
                 <Image
-                  src="/bottle-3d.png"
+                  src="/water single.jpeg"
                   alt="Nurture natural alkaline spring water bottle"
                   fill
                   sizes="(max-width: 1024px) 0px, 380px"

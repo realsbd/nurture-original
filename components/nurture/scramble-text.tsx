@@ -47,7 +47,7 @@ export function ScrambleText({
 }: ScrambleTextProps) {
   const Tag: React.ElementType = as ?? "span"
   const [display, setDisplay] = React.useState<string[]>(() =>
-    text.split("").map((c) => (c === " " ? " " : ""))
+    text.split("").map((c) => (c === " " ? " " : c))
   )
   const frameRef = React.useRef<number | undefined>(undefined)
   const completedRef = React.useRef(false)

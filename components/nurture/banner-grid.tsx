@@ -5,29 +5,57 @@ import Link from "next/link"
 
 import { Reveal } from "@/components/nurture/reveal"
 
-// Left column — scrolls normally, stacked tall
 const LEFT_IMAGES = [
-  { src: "/banner/banner.jpeg", alt: "Nurture water in the wild" },
-  { src: "/banner/banner-2.jpeg", alt: "Nurture can lifestyle shot" },
+  { src: "/banner/banner-2.jpeg", alt: "Nurture banner 16" },
+  { src: "/banner/banner-3.jpeg", alt: "Nurture banner 17" },
+  { src: "/banner/banner-4.jpeg", alt: "Nurture banner 18" },
+  { src: "/banner/fridge.jpeg", alt: "Nurture banner 18" },
 ]
 
-// Center column — sticky, split into two cells that stay pinned while you scroll
 const CENTER_IMAGES = [
-  { src: "/banner/banner-3.jpeg", alt: "Nurture product detail" },
-  { src: "/banner/banner-4.jpeg", alt: "Nurture outdoor scene" },
+  { src: "/water single.jpeg", alt: "Nurture banner 16" },
+  { src: "/sparkling single-blue.jpeg", alt: "Nurture banner 17" },
+  { src: "/sparkling single-lime.jpeg", alt: "Nurture banner 18" },
 ]
 
-// Right column — scrolls normally, stacked tall (mirrors left)
 const RIGHT_IMAGES = [
-  { src: "/banner/banner-4.jpeg", alt: "Nurture outdoor scene" },
-  { src: "/banner/banner-3.jpeg", alt: "Nurture product detail" },
+  { src: "/banner/lake.jpeg", alt: "Nurture banner 16" },
+  { src: "/sparkling pack-green.jpeg", alt: "Nurture banner 17" },
+  { src: "/sparkling pack-blue.jpeg", alt: "Nurture banner 18" },
+  { src: "/banner/banner.jpeg", alt: "Nurture banner 19" },
 ]
+
+function GalleryImage({
+  src,
+  alt,
+  overlay = "from-nurture-primary/50",
+}: {
+  src: string
+  alt: string
+  overlay?: string
+}) {
+  return (
+    <figure className="group relative w-full overflow-hidden rounded-2xl">
+      <Image
+        src={src}
+        alt={alt}
+        width={800}
+        height={600}
+        className="h-80 w-full object-fit align-bottom transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 md:h-96"
+      />
+      <div
+        className={`absolute inset-0 bg-gradient-to-t ${overlay} via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
+      />
+    </figure>
+  )
+}
 
 export function BannerGrid() {
   return (
-    <section className="relative overflow-hidden bg-nurture-primary">
+    /* No overflow-hidden here — it breaks position:sticky on children */
+    <section className="relative bg-nurture-primary">
       {/* ── Heading ─────────────────────────────────────────────── */}
-      <div className="relative z-10 mx-auto max-w-[1280px] px-[clamp(1rem,5vw,3rem)] pt-24 md:pt-32">
+      <div className="mx-auto max-w-[1280px] px-[clamp(1rem,5vw,3rem)] pt-24 md:pt-32">
         <Reveal from="up">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -41,7 +69,6 @@ export function BannerGrid() {
                 </em>
               </h2>
             </div>
-
             <Reveal from="right" delay={120}>
               <Link
                 href="/shop"
@@ -68,39 +95,41 @@ export function BannerGrid() {
         </Reveal>
       </div>
 
-      {/* ── Three-column sticky gallery ──────────────────────────── */}
-      <div className="mt-10 grid grid-cols-1 gap-2 px-2 pb-2 sm:grid-cols-12 sm:px-4 sm:pb-4">
+      {/* ── Three-column gallery ─────────────────────────────────
+          items-start is mandatory — without it grid children stretch
+          to the row height, and sticky has nothing to scroll against.
+      ──────────────────────────────────────────────────────────── */}
+      <div className="mt-10 grid grid-cols-1 items-start gap-2 px-2 pb-2 sm:grid-cols-3 sm:px-4 sm:pb-4">
 
-        {/* LEFT — scrolls */}
-        <div className="flex flex-col gap-2 sm:col-span-4">
+        {/* LEFT — normal scroll */}
+        <div className="flex flex-col gap-2">
           {LEFT_IMAGES.map((img, i) => (
-            <Reveal key={img.src + i} from="left" delay={i * 100}>
-              <figure className="group relative w-full overflow-hidden rounded-2xl">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  width={800}
-                  height={600}
-                  className="h-80 w-full object-cover align-bottom transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 md:h-96"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-nurture-primary/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              </figure>
+            <Reveal key={img.src} from="left" delay={i * 60}>
+              <GalleryImage src={img.src} alt={img.alt} />
             </Reveal>
           ))}
         </div>
 
-        {/* CENTER — sticky */}
-        <div className="sticky top-0 hidden h-screen grid-rows-2 gap-2 sm:col-span-4 sm:grid">
+        {/* CENTER — sticky
+            sticky works because:
+            1. No overflow:hidden on any ancestor
+            2. Parent grid uses items-start so this column is its natural height
+            3. top-0 pins it to the viewport top while sibling columns scroll
+        */}
+        <div className="sticky top-0 hidden flex-col gap-2 sm:flex">
           {CENTER_IMAGES.map((img, i) => (
-            <figure key={img.src + i} className="group relative h-full w-full overflow-hidden rounded-2xl">
+            <figure
+              key={img.src}
+              className="group relative w-full overflow-hidden rounded-2xl"
+            >
               <Image
                 src={img.src}
                 alt={img.alt}
-                fill
-                sizes="(max-width: 1280px) 33vw, 420px"
-                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                width={800}
+                height={600}
+                className="h-80 w-full object-fit align-bottom transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 md:h-96"
               />
-              {/* brand label */}
+              <div className="absolute inset-0 bg-gradient-to-t from-nurture-primary/80 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <div className="absolute inset-x-0 bottom-0 translate-y-2 p-5 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
                 <span className="font-mono-brand text-[0.65rem] tracking-[0.2em] text-nurture-spring uppercase">
                   Nurture Water
@@ -110,26 +139,17 @@ export function BannerGrid() {
           ))}
         </div>
 
-        {/* RIGHT — scrolls */}
-        <div className="flex flex-col gap-2 sm:col-span-4">
+        {/* RIGHT — normal scroll */}
+        <div className="flex flex-col gap-2">
           {RIGHT_IMAGES.map((img, i) => (
-            <Reveal key={img.src + "-r" + i} from="right" delay={i * 100}>
-              <figure className="group relative w-full overflow-hidden rounded-2xl">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  width={800}
-                  height={600}
-                  className="h-80 w-full object-cover align-bottom transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 md:h-96"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-nurture-primary/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              </figure>
+            <Reveal key={img.src} from="right" delay={i * 60}>
+              <GalleryImage src={img.src} alt={img.alt} />
             </Reveal>
           ))}
         </div>
       </div>
 
-      {/* ── Bottom fade into footer ──────────────────────────────── */}
+      {/* ── Bottom fade ──────────────────────────────────────────── */}
       <div className="pointer-events-none h-24 bg-gradient-to-b from-nurture-primary to-white" />
     </section>
   )

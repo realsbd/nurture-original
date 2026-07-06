@@ -110,12 +110,12 @@ export function Hero({ active }: HeroProps) {
       </div>
 
       {/* Scroll cue */}
-      <animated.div
+      {/* <animated.div
         style={{ opacity: copy.opacity }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono-brand text-[0.625rem] tracking-[0.3em] text-nurture-sky uppercase"
       >
         Scroll to explore ↓
-      </animated.div>
+      </animated.div> */}
     </section>
   )
 }

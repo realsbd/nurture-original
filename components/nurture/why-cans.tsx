@@ -37,7 +37,7 @@ export function WhyCans() {
                 }}
               >
                 <Image
-                  src="/nurture-can.png"
+                  src="/sparkling single-blue.jpeg"
                   alt="Nurture sparkling water aluminum can"
                   fill
                   sizes="(max-width: 1024px) 0px, 380px"

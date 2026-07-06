@@ -94,7 +94,7 @@ export function Loader({ onFinished }: LoaderProps) {
           className="relative inline-block h-[clamp(3rem,16vw,11rem)] w-[clamp(3rem,16vw,11rem)] shrink-0"
         >
           <Image
-            src="/logo.svg"
+            src="/logo-white-N.svg"
             alt=""
             fill
             priority
@@ -110,7 +110,7 @@ export function Loader({ onFinished }: LoaderProps) {
           to the logo mark so "N" + "URTURE" reads as a single word — tune the
           clamp if it overlaps or leaves a seam on your screen.
         */}
-        <span className="relative grid ml-[clamp(-1.75rem,-2.2vw,-0.35rem)]">
+        <span className="relative grid ml-[clamp(-1.75rem,-2.2vw,-0.35rem)]" suppressHydrationWarning>
           <animated.span
             style={scrambleFade}
             className="col-start-1 row-start-1"
@@ -133,7 +133,7 @@ export function Loader({ onFinished }: LoaderProps) {
             className="col-start-1 row-start-1 flex items-center"
           >
             <Image
-              src="/URTURE.svg"
+              src="/urture-white.svg"
               alt=""
               width={1218}
               height={159}

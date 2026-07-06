@@ -51,8 +51,8 @@ export const PRODUCTS: Product[] = [
     price: "$19.99 CAD",
     description:
       "Sourced from a protected Canadian spring and naturally filtered through the earth to deliver a crisp, refreshing taste. With a naturally alkaline pH of 8.0 and naturally occurring minerals, Nurture provides pure hydration for your everyday lifestyle. Bottled at the source and proudly Canadian.",
-    images: ["/water-pack.jpeg", "/water single.jpeg", "/water-pack2.jpeg", "/pack-still.jpeg", "/bottle-still.png", "/bottle-3d.png"],
-    thumb: "/bottle-still.png",
+    images: ["/water-pack.jpeg", "/water single.jpeg", "/water-pack2.jpeg"],
+    thumb: "/water single.jpeg",
     packPrice: 19.99,
     packCount: 24,
     nutrition: [
@@ -73,8 +73,8 @@ export const PRODUCTS: Product[] = [
     price: "$24.99 CAD",
     description:
       "Enjoy pure refreshment with Nurture Sparkling Water. Made from premium Canadian spring water and infused with crisp carbonation, this 355 mL can delivers a clean, refreshing taste with zero calories, no sugar, and no artificial ingredients. Simply pure sparkling hydration, proudly Canadian.",
-    images: ["/pack-sparkling.jpeg", "/can-sparkling.png", "/can-blue.png"],
-    thumb: "/can-sparkling.png",
+    images: ["/sparkling pack-blue.jpeg", "/sparkling single-blue.jpeg"],
+    thumb: "/sparkling pack-blue.jpeg",
     packPrice: 24.99,
     packCount: 12,
     nutrition: [
@@ -97,8 +97,8 @@ export const PRODUCTS: Product[] = [
     price: "$24.99 CAD",
     description:
       "Crafted without sugar, sweeteners, or artificial colours, Nurture Lemon & Lime Sparkling Water offers a refreshing alternative to sugary soft drinks while maintaining the pure quality and taste you expect from Nurture.",
-    images: ["/sparkling pack-green.jpeg", "/pack-lemon-lime.jpeg", "/nurture-can-green.jpeg", "/can-green.jpeg"],
-    thumb: "/nurture-can-green.jpeg",
+    images: ["/sparkling pack-green.jpeg", "/sparkling single-lime.jpeg"],
+    thumb: "/sparkling pack-green.jpeg",
     packPrice: 24.99,
     packCount: 12,
     nutrition: [

@@ -1,7 +1,5 @@
 import type { Metadata } from "next"
 import {
-  Geist,
-  Geist_Mono,
   Bricolage_Grotesque,
   Playfair_Display,
   Inter,
@@ -13,12 +11,8 @@ import { CartProvider } from "@/components/nurture/cart-context"
 import { CartDrawer } from "@/components/nurture/cart-drawer"
 import { cn } from "@/lib/utils"
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+const geist = { variable: "--font-sans" }
+const fontMono = { variable: "--font-mono" }
 
 // Nurture brand type stacks (see Design.md §3)
 const bricolage = Bricolage_Grotesque({
