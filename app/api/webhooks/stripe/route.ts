@@ -66,7 +66,6 @@ export async function POST(request: NextRequest) {
       // ── One-time payment completed ───────────────────────────────────────
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session
-
         if (session.payment_status === "paid") {
           await handleCheckoutSessionCompleted(session)
         }
@@ -116,28 +115,121 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ received: true })
 }
 
+// ── Date helpers ───────────────────────────────────────────────────────────
+// toLocaleString / toLocaleDateString depend on ICU locale data which is
+// often absent in serverless environments — use explicit UTC formatting instead.
+
+/** "YYYY-MM-DD HH:MM:SS UTC" from a Unix timestamp in seconds. */
+function formatTimestamp(unixSeconds: number): string {
+  const d = new Date(unixSeconds * 1000)
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return (
+    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ` +
+    `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`
+  )
+}
+
+/** "YYYY-MM-DD" from a Unix timestamp in seconds. */
+function formatDate(unixSeconds: number): string {
+  const d = new Date(unixSeconds * 1000)
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`
+}
+
 // ── Event handlers ─────────────────────────────────────────────────────────
-// Replace the console.log calls below with your actual fulfillment logic
-// (e.g. send confirmation email, write to database, trigger shipping, etc.)
 
 async function handleCheckoutSessionCompleted(
   session: Stripe.Checkout.Session
 ) {
   console.log("✅ [webhook] Payment succeeded — session:", session.id)
-  console.log("   Customer email:", session.customer_details?.email)
-  console.log("   Customer name:", session.customer_details?.name)
-  console.log("   Amount total:", session.amount_total, session.currency)
-  console.log("   Plan:", session.metadata?.planCadence)
-  // In Stripe v22, shipping info is nested under collected_information
-  console.log(
-    "   Shipping:",
-    session.collected_information?.shipping_details?.address
-  )
 
-  // TODO: Implement order fulfillment:
-  //   - Save order to your database
-  //   - Send confirmation email to session.customer_details.email
-  //   - Trigger warehouse / shipping workflow
+  // 1. If this was a subscription checkout, retrieve the subscription details
+  let subscription: Stripe.Subscription | null = null
+  if (typeof session.subscription === "string") {
+    subscription = await stripe.subscriptions.retrieve(session.subscription)
+  }
+
+  // 2. Extract address (prefer shipping, fallback to billing)
+  const address =
+    session.collected_information?.shipping_details?.address ||
+    session.customer_details?.address
+
+  // 2b. Retrieve the purchased line items to build a real product list.
+  // The cart product names live on the line items, not in session metadata,
+  // so we fetch them from Stripe. The HST line item is excluded.
+  let itemsSummary = ""
+  try {
+    const lineItems = await stripe.checkout.sessions.listLineItems(
+      session.id,
+      { limit: 100 }
+    )
+    itemsSummary = lineItems.data
+      .filter((li) => li.description !== "HST (13%)")
+      .map((li) =>
+        li.quantity && li.quantity > 1
+          ? `${li.description} x${li.quantity}`
+          : li.description
+      )
+      .join(", ")
+  } catch (err) {
+    console.error("[webhook] Failed to list line items:", err)
+  }
+
+  // Product column: "<product names> — <cadence>" for subscriptions,
+  // just the product names for one-time purchases.
+  const cadence = session.metadata?.planCadence
+  const isSubscription = cadence && cadence !== "One-time purchase"
+  const productName = itemsSummary
+    ? isSubscription
+      ? `${itemsSummary} — ${cadence}`
+      : itemsSummary
+    : isSubscription
+      ? `Subscription - ${cadence}`
+      : "One-time Purchase"
+
+  // 3. Send to Google Sheets if configured
+  if (process.env.GOOGLE_SCRIPT_URL) {
+    try {
+      await fetch(process.env.GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret: process.env.GOOGLE_SCRIPT_SECRET,
+          date: formatTimestamp(session.created),
+          customerName: session.customer_details?.name || "",
+          email: session.customer_details?.email || "",
+          phone: session.customer_details?.phone || "",
+          product: productName,
+          amount: session.amount_total
+            ? (session.amount_total / 100).toFixed(2)
+            : "0.00",
+          currency: session.currency?.toUpperCase() || "",
+          paymentStatus: session.payment_status,
+          subscriptionStatus: subscription?.status || "N/A",
+          billingPeriodStart: subscription?.items?.data[0]
+            ? formatDate(subscription.items.data[0].current_period_start)
+            : "N/A",
+          billingPeriodEnd: subscription?.items?.data[0]
+            ? formatDate(subscription.items.data[0].current_period_end)
+            : "N/A",
+          addressLine1: address?.line1 || "",
+          addressLine2: address?.line2 || "",
+          city: address?.city || "",
+          state: address?.state || "",
+          postalCode: address?.postal_code || "",
+          country: address?.country || "",
+          stripeCustomerId: session.customer || "",
+          subscriptionId: session.subscription || "N/A",
+          sessionId: session.id,
+        }),
+      })
+      console.log("✅ [webhook] Logged order to Google Sheet")
+    } catch (err) {
+      console.error("❌ [webhook] Failed to log to Google Sheet:", err)
+    }
+  } else {
+    console.warn("⚠️ [webhook] GOOGLE_SCRIPT_URL not set in .env.local")
+  }
 }
 
 async function handleSubscriptionRenewal(invoice: Stripe.Invoice) {
