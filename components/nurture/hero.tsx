@@ -1,14 +1,8 @@
 "use client"
 
-import dynamic from "next/dynamic"
+import Image from "next/image"
 import { animated, useTrail, useSpring } from "@react-spring/web"
 import { IconArrowRight } from "@tabler/icons-react"
-
-// 3D bottle is client-only (three.js touches window/canvas) — skip SSR.
-const Bottle3D = dynamic(
-  () => import("@/components/nurture/bottle-3d").then((m) => m.Bottle3D),
-  { ssr: false }
-)
 
 type HeroProps = {
   /** Becomes true once the intro loader finishes — kicks off all entrances. */
@@ -40,10 +34,19 @@ export function Hero({ active }: HeroProps) {
 
   return (
     <section className="relative min-h-dvh overflow-hidden bg-white pt-28 md:pt-32">
-      {/* Ambient orb */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="hero-orb absolute -top-[20%] -right-[15%] h-[80vw] w-[80vw] rounded-full" />
-      </div>
+      {/* Full-bleed background image */}
+      <Image
+        src="/hero-bg.jpeg"
+        alt="Nurture products against a snowy mountain landscape"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
+      />
+
+      {/* Legibility scrim — brightest on the left where the copy sits, fading
+          away toward the right so the product scene stays visible. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/90 via-white/60 to-transparent" />
 
       <div className="relative mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-8 px-[clamp(1rem,5vw,3rem)] lg:grid-cols-[1.05fr_0.95fr]">
         {/* ── Left: copy ─────────────────────────────── */}
@@ -103,19 +106,10 @@ export function Hero({ active }: HeroProps) {
           </animated.div>
         </div>
 
-        {/* ── Right: animated 3D bottle ── */}
-        <div className="relative h-[50vh] min-h-[360px] sm:h-[60vh] lg:h-[82vh]">
-          <Bottle3D active={active} className="absolute inset-0" />
-        </div>
+        {/* ── Right: intentionally empty — the product scene lives in the
+            background image behind this column. ── */}
+        <div className="hidden lg:block" aria-hidden />
       </div>
-
-      {/* Scroll cue */}
-      {/* <animated.div
-        style={{ opacity: copy.opacity }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono-brand text-[0.625rem] tracking-[0.3em] text-nurture-sky uppercase"
-      >
-        Scroll to explore ↓
-      </animated.div> */}
     </section>
   )
 }

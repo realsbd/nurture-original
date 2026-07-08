@@ -118,11 +118,12 @@ export type ApparelItem = {
   id: string
   name: string
   price: number
+  image: string
 }
 
 export const APPAREL: ApparelItem[] = [
-  { id: "tshirt", name: "Nurture T-Shirt", price: 24.99 },
-  { id: "hat", name: "Nurture Hat", price: 29.99 },
+  { id: "tshirt", name: "Nurture T-Shirt", price: 24.99, image: "/t-shirt.jpeg" },
+  { id: "hat", name: "Nurture Hat", price: 29.99, image: "/face cap.jpeg" },
 ]
 
 export type SubscriptionPlan = {

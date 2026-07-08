@@ -1,6 +1,7 @@
 "use client"
 
-import { IconShirt, IconCrown, IconPlus } from "@tabler/icons-react"
+import Image from "next/image"
+import { IconPlus } from "@tabler/icons-react"
 
 import { Navbar } from "@/components/nurture/navbar"
 import { Footer } from "@/components/nurture/footer"
@@ -15,14 +16,8 @@ import {
   type ApparelItem,
 } from "@/components/nurture/content"
 
-const APPAREL_ICON: Record<string, typeof IconShirt> = {
-  tshirt: IconShirt,
-  hat: IconCrown,
-}
-
 function ApparelCard({ item }: { item: ApparelItem }) {
   const { addItem, openCart } = useCart()
-  const Icon = APPAREL_ICON[item.id] ?? IconShirt
 
   const handleAdd = () => {
     addItem({
@@ -32,7 +27,7 @@ function ApparelCard({ item }: { item: ApparelItem }) {
       variantLabel: "One size",
       unitPrice: item.price,
       qty: 1,
-      image: "/logo-icon.svg",
+      image: item.image,
     })
     openCart()
   }
@@ -40,8 +35,14 @@ function ApparelCard({ item }: { item: ApparelItem }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-2xl border border-nurture-ice bg-white px-7 py-6 transition-all duration-300 hover:-translate-y-1 hover:border-nurture-sky hover:shadow-[0_16px_50px_rgba(111,187,255,0.22)]">
       <div className="flex items-center gap-4">
-        <span className="grid size-12 place-items-center rounded-xl bg-nurture-ice text-nurture-primary">
-          <Icon size={24} stroke={1.75} />
+        <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-nurture-ice">
+          <Image
+            src={item.image}
+            alt={item.name}
+            width={64}
+            height={64}
+            className="size-full object-contain"
+          />
         </span>
         <div>
           <span className="font-mono-brand text-[0.65rem] tracking-[0.15em] text-nurture-sky uppercase">
@@ -87,8 +88,7 @@ export default function ShopPage() {
               </em>
             </h1>
             <p className="mt-5 max-w-md font-body text-base leading-relaxed text-white/80">
-              Choose a single bottle or can to try, or stock up with a pack.
-              Naturally alkaline, proudly Canadian — priced in CAD.
+              Choose between our still water or sparkling water and stock up as you go. Naturally alkaline, proudly Canadian.
             </p>
           </Reveal>
         </div>

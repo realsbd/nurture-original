@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
+import {
+  sendPaymentSuccessEmail,
+  sendPaymentFailedEmail,
+} from "@/lib/emails"
 import type Stripe from "stripe"
 
 /**
@@ -11,6 +15,8 @@ import type Stripe from "stripe"
  *
  * Recommended events to subscribe to:
  *   • checkout.session.completed
+ *   • checkout.session.async_payment_succeeded  (delayed methods settle)
+ *   • checkout.session.async_payment_failed     (delayed methods fail)
  *   • checkout.session.expired
  *   • invoice.payment_succeeded      (subscription renewals)
  *   • invoice.payment_failed         (subscription payment failures)
@@ -69,6 +75,22 @@ export async function POST(request: NextRequest) {
         if (session.payment_status === "paid") {
           await handleCheckoutSessionCompleted(session)
         }
+        break
+      }
+
+      // ── Delayed payment method cleared (e.g. bank debit) ─────────────────
+      // For async methods, `completed` fires first as unpaid; this event fires
+      // once the funds actually settle — treat it as the real success.
+      case "checkout.session.async_payment_succeeded": {
+        const session = event.data.object as Stripe.Checkout.Session
+        await handleCheckoutSessionCompleted(session)
+        break
+      }
+
+      // ── Delayed payment method failed ────────────────────────────────────
+      case "checkout.session.async_payment_failed": {
+        const session = event.data.object as Stripe.Checkout.Session
+        await handleCheckoutAsyncPaymentFailed(session)
         break
       }
 
@@ -134,6 +156,15 @@ function formatDate(unixSeconds: number): string {
   const d = new Date(unixSeconds * 1000)
   const pad = (n: number) => String(n).padStart(2, "0")
   return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`
+}
+
+/** "$12.34 CAD" from a Stripe amount in minor units (cents) + currency code. */
+function formatAmount(
+  amountMinor: number | null,
+  currency: string | null
+): string {
+  const value = (amountMinor ?? 0) / 100
+  return `$${value.toFixed(2)} ${(currency ?? "cad").toUpperCase()}`
 }
 
 // ── Event handlers ─────────────────────────────────────────────────────────
@@ -230,6 +261,50 @@ async function handleCheckoutSessionCompleted(
   } else {
     console.warn("⚠️ [webhook] GOOGLE_SCRIPT_URL not set in .env.local")
   }
+
+  // 4. Email the customer a payment confirmation.
+  const customerEmail = session.customer_details?.email
+  if (customerEmail) {
+    try {
+      await sendPaymentSuccessEmail({
+        to: customerEmail,
+        customerName: session.customer_details?.name ?? undefined,
+        productSummary: productName,
+        amountFormatted: formatAmount(session.amount_total, session.currency),
+        orderRef:
+          typeof session.subscription === "string"
+            ? session.subscription
+            : session.id,
+        isSubscription: Boolean(isSubscription),
+      })
+      console.log("📧 [webhook] Sent confirmation email to", customerEmail)
+    } catch (err) {
+      console.error("❌ [webhook] Failed to send confirmation email:", err)
+    }
+  } else {
+    console.warn("⚠️ [webhook] No customer email on session — skipping email")
+  }
+}
+
+async function handleCheckoutAsyncPaymentFailed(
+  session: Stripe.Checkout.Session
+) {
+  console.warn("⚠️ [webhook] Async payment failed — session:", session.id)
+
+  const email = session.customer_details?.email
+  if (email) {
+    try {
+      await sendPaymentFailedEmail({
+        to: email,
+        customerName: session.customer_details?.name ?? undefined,
+        amountFormatted: formatAmount(session.amount_total, session.currency),
+        reason: "initial",
+      })
+      console.log("📧 [webhook] Sent payment-failure email to", email)
+    } catch (err) {
+      console.error("❌ [webhook] Failed to send payment-failure email:", err)
+    }
+  }
 }
 
 async function handleSubscriptionRenewal(invoice: Stripe.Invoice) {
@@ -247,7 +322,23 @@ async function handleSubscriptionPaymentFailed(invoice: Stripe.Invoice) {
   )
   console.warn("   Customer:", invoice.customer)
 
-  // TODO: Notify customer, pause subscription, retry logic, etc.
+  // Notify the customer their renewal payment failed.
+  const email = invoice.customer_email
+  if (email) {
+    try {
+      await sendPaymentFailedEmail({
+        to: email,
+        customerName: invoice.customer_name ?? undefined,
+        amountFormatted: formatAmount(invoice.amount_due, invoice.currency),
+        reason: "renewal",
+      })
+      console.log("📧 [webhook] Sent renewal-failure email to", email)
+    } catch (err) {
+      console.error("❌ [webhook] Failed to send renewal-failure email:", err)
+    }
+  }
+
+  // TODO: pause subscription, retry logic, etc.
 }
 
 async function handleSubscriptionCancelled(subscription: Stripe.Subscription) {

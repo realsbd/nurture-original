@@ -7,7 +7,7 @@ import { Reveal } from "@/components/nurture/reveal"
 
 const LEFT_IMAGES = [
   { src: "/banner/banner-2.jpeg", alt: "Nurture banner 16" },
-  { src: "/banner/banner-3.jpeg", alt: "Nurture banner 17" },
+  { src: "/banner/banner-5.jpeg", alt: "Nurture banner 17" },
   // { src: "/banner/banner-4.jpeg", alt: "Nurture banner 18" },
   { src: "/banner/fridge.jpeg", alt: "Nurture banner 18" },
 ]
