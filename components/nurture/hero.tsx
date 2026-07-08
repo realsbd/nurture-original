@@ -44,13 +44,16 @@ export function Hero({ active }: HeroProps) {
         className="object-cover object-center"
       />
 
-      {/* Legibility scrim — brightest on the left where the copy sits, fading
-          away toward the right so the product scene stays visible. */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/90 via-white/60 to-transparent" />
+      {/* Legibility scrim. On mobile the copy spans the full width and sits
+          over the bright centre of the photo, so we lay down a strong vertical
+          white wash. On desktop (md+) the copy is confined to the left column,
+          so we switch to a left-to-right fade that keeps the product scene on
+          the right visible. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white via-white/85 to-white/45 md:bg-gradient-to-r md:from-white/95 md:via-white/70 md:to-transparent" />
 
       <div className="relative mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-8 px-[clamp(1rem,5vw,3rem)] lg:grid-cols-[1.05fr_0.95fr]">
         {/* ── Left: copy ─────────────────────────────── */}
-        <div className="relative z-10">
+        <div className="relative z-10 [text-shadow:0_1px_12px_rgba(255,255,255,0.9)]">
           <span className="font-mono-brand text-xs tracking-[0.2em] text-nurture-sky uppercase">
             Naturally Alkaline Spring Water
           </span>

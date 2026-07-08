@@ -91,7 +91,7 @@ export function Loader({ onFinished }: LoaderProps) {
         <animated.span
           style={logo}
           aria-hidden="true"
-          className="relative inline-block h-[clamp(3rem,16vw,11rem)] w-[clamp(3rem,16vw,11rem)] shrink-0"
+          className="relative inline-block h-[clamp(3rem,16vw,11rem)] w-[clamp(3rem,16vw,11rem)] shrink-0 border-r"
         >
           <Image
             src="/logo-white-N.svg"
@@ -123,7 +123,7 @@ export function Loader({ onFinished }: LoaderProps) {
               stagger={70}
               scrambleDuration={650}
               onComplete={handleComplete}
-              className="font-display text-[#033892] text-[clamp(3rem,16vw,11rem)] leading-none font-black tracking-tight"
+              className="font-display text-white text-[clamp(3rem,16vw,11rem)] leading-none font-black tracking-tight"
             />
           </animated.span>
 
