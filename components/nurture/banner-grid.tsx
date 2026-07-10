@@ -13,15 +13,15 @@ const LEFT_IMAGES = [
 ]
 
 const CENTER_IMAGES = [
+  { src: "/banner/girl-with-lime.jpeg", alt: "Nurture banner 17" },
+  { src: "/banner/gym-girl.jpeg", alt: "Nurture banner 18" },
   { src: "/water single.jpeg", alt: "Nurture banner 16" },
-  { src: "/sparkling single-blue.jpeg", alt: "Nurture banner 17" },
-  { src: "/sparkling single-lime.jpeg", alt: "Nurture banner 18" },
 ]
 
 const RIGHT_IMAGES = [
+  { src: "/banner/man-face-cap.jpeg", alt: "Nurture banner 17" },
+  { src: "/banner/tennis-girl.jpeg", alt: "Nurture banner 18" },
   { src: "/banner/lake.jpeg", alt: "Nurture banner 16" },
-  { src: "/sparkling pack-green.jpeg", alt: "Nurture banner 17" },
-  { src: "/sparkling pack-blue.jpeg", alt: "Nurture banner 18" },
   // { src: "/banner/banner.jpeg", alt: "Nurture banner 19" },
 ]
 
