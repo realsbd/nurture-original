@@ -8,7 +8,11 @@ import * as THREE from "three"
 
 import { usePrefersReducedMotion } from "@/components/nurture/use-scroll"
 
-const MODEL_URL = "/bottle.glb"
+// Filenames contain spaces — encode them so the static URLs resolve.
+const MODEL_URL = encodeURI("/Nurture Rotation Animation 2.glb")
+const ENV_URL = encodeURI(
+  "/brown-photostudio-01_1K_80779ef4-a42d-40cc-84f7-2082f579c795.exr"
+)
 
 function BottleModel({ reducedMotion }: { reducedMotion: boolean }) {
   const { scene } = useGLTF(MODEL_URL)
@@ -27,6 +31,8 @@ function BottleModel({ reducedMotion }: { reducedMotion: boolean }) {
     return { object: clone, scale: 2.9 / maxDim }
   }, [scene])
 
+  // The glb ships without a baked animation clip, so we drive the rotation
+  // ourselves: a steady spin plus a gentle vertical float.
   useFrame((state) => {
     const g = groupRef.current
     if (!g) return
@@ -87,7 +93,9 @@ export function Bottle3D({ active, className }: Bottle3DProps) {
         <directionalLight position={[-5, 2, -4]} intensity={0.5} color="#6FBBFF" />
         <React.Suspense fallback={<CanvasFallback />}>
           <BottleModel reducedMotion={reducedMotion} />
-          <Environment preset="city" />
+          {/* Studio EXR drives the reflections/lighting on the bottle without
+              showing as a visible background (alpha canvas stays transparent). */}
+          <Environment files={ENV_URL} />
         </React.Suspense>
         <ContactShadows
           position={[0, -1.9, 0]}

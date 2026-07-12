@@ -1,8 +1,14 @@
 "use client"
 
-import Image from "next/image"
+import dynamic from "next/dynamic"
 import { animated, useTrail, useSpring } from "@react-spring/web"
 import { IconArrowRight } from "@tabler/icons-react"
+
+// 3D bottle is client-only (three.js touches window/canvas) — skip SSR.
+const Bottle3D = dynamic(
+  () => import("@/components/nurture/bottle-3d").then((m) => m.Bottle3D),
+  { ssr: false }
+)
 
 type HeroProps = {
   /** Becomes true once the intro loader finishes — kicks off all entrances. */
@@ -34,26 +40,14 @@ export function Hero({ active }: HeroProps) {
 
   return (
     <section className="relative min-h-dvh overflow-hidden bg-white pt-28 md:pt-32">
-      {/* Full-bleed background image */}
-      <Image
-        src="/hero-bg.jpeg"
-        alt="Nurture products against a snowy mountain landscape"
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-center"
-      />
-
-      {/* Legibility scrim. On mobile the copy spans the full width and sits
-          over the bright centre of the photo, so we lay down a strong vertical
-          white wash. On desktop (md+) the copy is confined to the left column,
-          so we switch to a left-to-right fade that keeps the product scene on
-          the right visible. */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white via-white/85 to-white/45 md:bg-gradient-to-r md:from-white/95 md:via-white/70 md:to-transparent" />
+      {/* Ambient orb */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="hero-orb absolute -top-[20%] -right-[15%] h-[80vw] w-[80vw] rounded-full" />
+      </div>
 
       <div className="relative mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-8 px-[clamp(1rem,5vw,3rem)] lg:grid-cols-[1.05fr_0.95fr]">
         {/* ── Left: copy ─────────────────────────────── */}
-        <div className="relative z-10 [text-shadow:0_1px_12px_rgba(255,255,255,0.9)]">
+        <div className="relative z-10">
           <span className="font-mono-brand text-xs tracking-[0.2em] text-nurture-sky uppercase">
             Naturally Alkaline Spring Water
           </span>
@@ -109,9 +103,10 @@ export function Hero({ active }: HeroProps) {
           </animated.div>
         </div>
 
-        {/* ── Right: intentionally empty — the product scene lives in the
-            background image behind this column. ── */}
-        <div className="hidden lg:block" aria-hidden />
+        {/* ── Right: animated 3D bottle ── */}
+        <div className="relative h-[50vh] min-h-[360px] sm:h-[60vh] lg:h-[82vh]">
+          <Bottle3D active={active} className="absolute inset-0" />
+        </div>
       </div>
     </section>
   )

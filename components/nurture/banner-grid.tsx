@@ -7,7 +7,7 @@ import { Reveal } from "@/components/nurture/reveal"
 
 const LEFT_IMAGES = [
   { src: "/banner/banner-2.jpeg", alt: "Nurture banner 16" },
-  { src: "/banner/banner-5.jpeg", alt: "Nurture banner 17" },
+  // { src: "/banner/banner-5.jpeg", alt: "Nurture banner 17" },
   // { src: "/banner/banner-4.jpeg", alt: "Nurture banner 18" },
   { src: "/banner/fridge.jpeg", alt: "Nurture banner 18" },
 ]
@@ -15,13 +15,13 @@ const LEFT_IMAGES = [
 const CENTER_IMAGES = [
   { src: "/banner/girl-with-lime.jpeg", alt: "Nurture banner 17" },
   { src: "/banner/gym-girl.jpeg", alt: "Nurture banner 18" },
-  { src: "/water single.jpeg", alt: "Nurture banner 16" },
+  // { src: "/water single.jpeg", alt: "Nurture banner 16" },
 ]
 
 const RIGHT_IMAGES = [
   { src: "/banner/man-face-cap.jpeg", alt: "Nurture banner 17" },
-  { src: "/banner/tennis-girl.jpeg", alt: "Nurture banner 18" },
-  { src: "/banner/lake.jpeg", alt: "Nurture banner 16" },
+  // { src: "/banner/tennis-girl.jpeg", alt: "Nurture banner 18" },
+  // { src: "/banner/lake.jpeg", alt: "Nurture banner 16" },
   // { src: "/banner/banner.jpeg", alt: "Nurture banner 19" },
 ]
 
